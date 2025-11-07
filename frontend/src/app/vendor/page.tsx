@@ -171,7 +171,7 @@ export default function VendorPage() {
         <div className="mt-12 rounded-lg bg-white p-8 shadow">
           <h3 className="text-2xl font-bold text-gray-900">Getting Started</h3>
           <p className="mt-2 text-gray-600">
-            Welcome to your vendor portal! Here's how to get started:
+            Welcome to your vendor portal! Here&apos;s how to get started:
           </p>
           <ol className="mt-6 space-y-3 text-gray-700">
             <li className="flex items-start">

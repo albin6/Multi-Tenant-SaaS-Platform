@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Loader2, 
@@ -36,11 +36,7 @@ export function OrganizationDashboard({ subdomain }: OrganizationDashboardProps)
   const [error, setError] = useState('');
   const router = useRouter();
 
-  useEffect(() => {
-    fetchOrganization();
-  }, [subdomain]);
-
-  const fetchOrganization = async () => {
+  const fetchOrganization = useCallback(async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
       const response = await fetch(
@@ -58,7 +54,11 @@ export function OrganizationDashboard({ subdomain }: OrganizationDashboardProps)
     } finally {
       setLoading(false);
     }
-  };
+  }, [subdomain]);
+
+  useEffect(() => {
+    fetchOrganization();
+  }, [fetchOrganization]);
 
   if (loading) {
     return (
@@ -75,7 +75,7 @@ export function OrganizationDashboard({ subdomain }: OrganizationDashboardProps)
           <CardHeader>
             <CardTitle className="text-red-600">Organization Not Found</CardTitle>
             <CardDescription>
-              The organization "{subdomain}" could not be found.
+              The organization &quot;{subdomain}&quot; could not be found.
             </CardDescription>
           </CardHeader>
           <CardContent>

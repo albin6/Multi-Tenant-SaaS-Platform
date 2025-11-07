@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, Store, Package, ShoppingCart, Phone, Mail, MapPin, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,11 +28,7 @@ export function OrganizationLanding({ subdomain }: OrganizationLandingProps) {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  useEffect(() => {
-    fetchOrganization();
-  }, [subdomain]);
-
-  const fetchOrganization = async () => {
+  const fetchOrganization = useCallback(async () => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
       const url = `${apiUrl}/organizations/by-orgname/${subdomain}`;
@@ -72,7 +68,11 @@ export function OrganizationLanding({ subdomain }: OrganizationLandingProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [subdomain]);
+
+  useEffect(() => {
+    fetchOrganization();
+  }, [fetchOrganization]);
 
   if (loading) {
     return (
@@ -89,7 +89,7 @@ export function OrganizationLanding({ subdomain }: OrganizationLandingProps) {
           <CardHeader>
             <CardTitle className="text-red-600">Organization Not Found</CardTitle>
             <CardDescription>
-              The organization "{subdomain}" could not be found or is not active.
+              The organization &quot;{subdomain}&quot; could not be found or is not active.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -144,7 +144,7 @@ export function OrganizationLanding({ subdomain }: OrganizationLandingProps) {
         <div className="bg-yellow-50 border-b border-yellow-200">
           <div className="container mx-auto px-4 py-3">
             <p className="text-sm text-yellow-800 text-center">
-              ⚠️ This organization's subscription is not active. Some features may be limited.
+              ⚠️ This organization&apos;s subscription is not active. Some features may be limited.
             </p>
           </div>
         </div>
