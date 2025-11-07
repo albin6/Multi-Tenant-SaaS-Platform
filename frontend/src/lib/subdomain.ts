@@ -24,6 +24,9 @@ export function detectSubdomain(): SubdomainInfo {
 
   const hostname = window.location.hostname;
   const parts = hostname.split('.');
+  
+  // Get the configured base domain (e.g., "multi-tenant-saas-platform-1.onrender.com" or "localhost")
+  const configuredBaseDomain = process.env.NEXT_PUBLIC_BASE_DOMAIN || 'localhost';
 
   // For localhost development: orgname.localhost
   if (parts.length >= 2 && parts[parts.length - 1] === 'localhost') {
@@ -37,15 +40,25 @@ export function detectSubdomain(): SubdomainInfo {
     }
   }
 
-  // For production: orgname.yourdomain.com
-  if (parts.length >= 3) {
-    const subdomain = parts[0];
-    if (subdomain && subdomain !== 'www') {
-      const baseDomain = parts.slice(1).join('.');
+  // Check if current hostname matches the base domain (not a subdomain)
+  if (hostname === configuredBaseDomain) {
+    return {
+      isSubdomain: false,
+      subdomain: null,
+      baseDomain: hostname,
+    };
+  }
+
+  // For production: orgname.yourdomain.com (e.g., acme.multi-tenant-saas-platform-1.onrender.com)
+  // Only treat as subdomain if there's an extra level beyond the base domain
+  if (hostname.endsWith(`.${configuredBaseDomain}`)) {
+    const subdomain = hostname.replace(`.${configuredBaseDomain}`, '');
+    // Make sure it's a single subdomain level (no dots in subdomain)
+    if (subdomain && !subdomain.includes('.') && subdomain !== 'www') {
       return {
         isSubdomain: true,
         subdomain,
-        baseDomain,
+        baseDomain: configuredBaseDomain,
       };
     }
   }
