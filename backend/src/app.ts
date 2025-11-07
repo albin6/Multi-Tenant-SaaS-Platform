@@ -45,10 +45,15 @@ export const createApp = (): Application => {
           return callback(null, true);
         }
 
-        // In production, you should allow your actual domain subdomains
-        // if (origin.match(/^https?:\/\/[\w-]+\.yourdomain\.com$/)) {
-        //   return callback(null, true);
-        // }
+        // Allow Render frontend domain and its subdomains
+        if (origin.match(/^https:\/\/[\w-]+\.onrender\.com$/)) {
+          return callback(null, true);
+        }
+
+        // Allow main frontend domain (without subdomain)
+        if (origin === 'https://multi-tenant-saas-platform-1.onrender.com') {
+          return callback(null, true);
+        }
 
         // Reject other origins
         callback(new Error('Not allowed by CORS'));
