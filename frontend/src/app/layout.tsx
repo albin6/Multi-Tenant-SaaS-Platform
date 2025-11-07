@@ -1,0 +1,28 @@
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { ClerkProvider } from '@clerk/nextjs';
+import { Providers } from './providers';
+import '@/styles/globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Enterprise App - MERN Stack',
+  description: 'Full-stack enterprise application with Clean Architecture',
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <Providers>{children}</Providers>
+        </body>
+      </html>
+    </ClerkProvider>
+  );
+}
